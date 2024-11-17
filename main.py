@@ -1,28 +1,42 @@
-from climb import climb_data_xinlang
-from data_to_mysql import save_to_mysql
-from show_base import show_data_with_qt
-from show_base import show_data_with_imgui
-from show_base import show_data_with_pandas
-from k_line import plot_kline
+import sys
+from gui import GUI
+from database import Database
+from chart import ChartDrawer
+from stock_crawler import StockCrawler
 
-code = "sh600000"
-timeout = 60
-datalen = 2000
+def initialize_data():
+    crawler = StockCrawler('AAPL')
+    
+    db = Database()
+    
+    try:
+        stock_data = crawler.fetch_data()
+        
+        stock_data = ChartDrawer.calculate_indicators(stock_data)
+        
+        db.save_stock_data(stock_data)
+        
+        return True
+        
+    except Exception as e:
+        print(f"错误: {str(e)}")
+        return False
 
-database = "pywork"
+def main():
+    # 首先初始化数据
+    if len(sys.argv) > 1 and sys.argv[1] == '--no-fetch':
+        print("跳过数据获取步骤...")
+    else:
+        success = initialize_data()
+        if not success:
+            user_input = input("数据初始化失败，是否继续启动GUI？(y/n): ")
+            if user_input.lower() != 'y':
+                sys.exit(1)
+    
+    # 启动GUI
+    print("启动图形界面...")
+    app = GUI()
+    app.run()
 
-# 获取到信息
-data_for_k_line_pd = climb_data_xinlang(code, timeout, datalen)
-data_for_gl = climb_data_xinlang(code, timeout, 500)
-
-# 保存到数据库,使用时去掉注释即可
-save_to_mysql(data_for_k_line_pd, database)
-save_to_mysql(data_for_gl, database)
-
-# 绘制表格
-show_data_with_qt()
-show_data_with_imgui()
-show_data_with_pandas()
-
-# 绘制K线图
-plot_kline('pywork')
+if __name__ == "__main__":
+    main() 
