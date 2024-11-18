@@ -78,12 +78,12 @@ class Database:
         ''')
         rows = self.cursor.fetchall()
         
-        df = pd.DataFrame(rows, columns=['Date', 'Open', 'High', 'Low', 'Close', 'Volume',
+        df = pd.DataFrame(rows, columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume',
                                        'MA5', 'MA10', 'MA20', 'MACD', 'MACD_Signal', 'MACD_Hist',
                                        'RSI', 'KDJ_K', 'KDJ_D', 'KDJ_J'])
         
         df['Date'] = pd.to_datetime(df['Date'])
-        df.set_index('Date', inplace=True)
+        df.set_index('Date', inplace = True)
         
         float_columns = ['Open', 'High', 'Low', 'Close', 'MA5', 'MA10', 'MA20',
                         'MACD', 'MACD_Signal', 'MACD_Hist', 'RSI', 'KDJ_K', 'KDJ_D', 'KDJ_J']

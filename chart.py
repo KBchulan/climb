@@ -35,9 +35,6 @@ class ChartDrawer:
 
     @staticmethod
     def draw_kline(df):
-        if 'MA5' not in df.columns:
-            df = ChartDrawer.calculate_indicators(df)
-        
         mc = mpf.make_marketcolors(
             up = 'red',
             down = 'green',
@@ -47,8 +44,8 @@ class ChartDrawer:
         )
         
         plt.rcParams['font.size'] = 14
-        plt.rcParams['axes.titlesize'] = 16
-        plt.rcParams['axes.labelsize'] = 14
+        plt.rcParams['axes.titlesize'] = 12
+        plt.rcParams['axes.labelsize'] = 12
         plt.rcParams['legend.fontsize'] = 12
         
         s = mpf.make_mpf_style(
@@ -63,18 +60,18 @@ class ChartDrawer:
         )
         
         add_plots = [
-            mpf.make_addplot(df['MA5'], color='blue', width=1, panel=0, secondary_y=False),
-            mpf.make_addplot(df['MA10'], color='orange', width=1, panel=0, secondary_y=False),
-            mpf.make_addplot(df['MA20'], color='purple', width=1, panel=0, secondary_y=False),
+            mpf.make_addplot(df['MA5'], color = 'blue', width = 1, panel = 0, secondary_y = False),
+            mpf.make_addplot(df['MA10'], color = 'orange', width = 1, panel = 0, secondary_y = False),
+            mpf.make_addplot(df['MA20'], color = 'purple', width = 1, panel = 0, secondary_y = False),
             
-            mpf.make_addplot(df['MACD'], color='blue', panel=2, secondary_y=False, ylabel='MACD'),
-            mpf.make_addplot(df['MACD_Signal'], color='orange', panel=2, secondary_y=False),
-            mpf.make_addplot(df['MACD_Hist'], type='bar', color='dimgray', panel=2, secondary_y=False),
+            mpf.make_addplot(df['MACD'], color = 'blue', panel = 1, secondary_y = False, ylabel = 'MACD'),
+            mpf.make_addplot(df['MACD_Signal'], color = 'orange', panel = 1, secondary_y = False),
+            mpf.make_addplot(df['MACD_Hist'], type = 'bar', color = 'dimgray', panel = 1, secondary_y = False),
             
-            mpf.make_addplot(df['RSI'], color='red', panel=3, secondary_y=False),
-            mpf.make_addplot(df['KDJ_K'], color='blue', panel=3, secondary_y=False),
-            mpf.make_addplot(df['KDJ_D'], color='orange', panel=3, secondary_y=False),
-            mpf.make_addplot(df['KDJ_J'], color='purple', panel=3, secondary_y=False)
+            mpf.make_addplot(df['RSI'], color = 'red', panel = 3, secondary_y = False),
+            mpf.make_addplot(df['KDJ_K'], color = 'blue', panel = 3, secondary_y = False),
+            mpf.make_addplot(df['KDJ_D'], color = 'orange', panel = 3, secondary_y = False),
+            mpf.make_addplot(df['KDJ_J'], color = 'purple', panel = 3, secondary_y = False)
         ]
         
         fig, axes = mpf.plot(
@@ -91,31 +88,31 @@ class ChartDrawer:
             returnfig = True,
             xrotation = 0,
             datetime_format = '%Y-%m-%d',
-            volume_panel = 1
+            volume_panel = 2
         )
         
         for ax in axes:
             if ax is not None:
-                ax.tick_params(axis='x', rotation=45)
-                ax.grid(True, linestyle='--', alpha=0.5)
+                ax.tick_params(axis = 'x', rotation = 45)
+                ax.grid(True, linestyle = '--', alpha = 0.5)
                 if hasattr(ax, 'legend_') and ax.legend_:
                     ax.legend_.remove()
         
         axes[0].legend(['MA5', 'MA10', 'MA20'], 
-                      loc='upper left', fontsize=12)
+                      loc = 'upper left', fontsize = 12)
         
         if len(axes) > 2:
-            axes[2].legend(['MACD', 'Signal', 'Histogram'], 
-                          loc='upper left', fontsize=12)
+            axes[1].legend(['MACD', 'Signal', 'Histogram'], 
+                          loc = 'upper left', fontsize = 8)
         
         if len(axes) > 3:
             axes[3].legend(['RSI', 'K', 'D', 'J'], 
-                          loc='upper left', fontsize=12)
+                          loc = 'upper left', fontsize = 12)
         
-        axes[0].set_title('Price & MA', fontsize = 14, pad = 10)
-        axes[1].set_title('Volume', fontsize = 14, pad = 10)
-        axes[2].set_title('MACD', fontsize = 14, pad = 10)
-        axes[3].set_title('RSI & KDJ', fontsize = 14, pad = 10)
+        axes[0].set_title('Price & MA', fontsize = 8, pad = 10)
+        axes[1].set_title('MACD', fontsize = 8, pad = 10)
+        axes[2].set_title('Volume', fontsize = 8, pad = 10)
+        axes[3].set_title('RSI & KDJ', fontsize = 8, pad = 10)
         
         fig.suptitle('AAPL K Line', fontsize = 18, y = 0.95)
         
