@@ -9,7 +9,6 @@ class Database:
         self.create_tables()
     
     def create_tables(self):
-        # 先删除已存在的表
         self.cursor.execute('DROP TABLE IF EXISTS apple')
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS apple (
@@ -34,7 +33,6 @@ class Database:
         self.conn.commit()
     
     def save_stock_data(self, df):
-        # 将NaN值替换为None，这样MySQL会将其存储为NULL
         df = df.where(pd.notnull(df), None)
         
         for index, row in df.iterrows():
@@ -84,11 +82,9 @@ class Database:
                                        'MA5', 'MA10', 'MA20', 'MACD', 'MACD_Signal', 'MACD_Hist',
                                        'RSI', 'KDJ_K', 'KDJ_D', 'KDJ_J'])
         
-        # 将Date列转换为datetime类型并设置为索引
         df['Date'] = pd.to_datetime(df['Date'])
         df.set_index('Date', inplace=True)
         
-        # 确保所有数值列都是float类型（除了Volume是整数）
         float_columns = ['Open', 'High', 'Low', 'Close', 'MA5', 'MA10', 'MA20',
                         'MACD', 'MACD_Signal', 'MACD_Hist', 'RSI', 'KDJ_K', 'KDJ_D', 'KDJ_J']
         for col in float_columns:
@@ -98,7 +94,6 @@ class Database:
         return df
     
     def __del__(self):
-        """确保程序结束时关闭数据库连接"""
         if hasattr(self, 'cursor') and self.cursor:
             self.cursor.close()
         if hasattr(self, 'conn') and self.conn:

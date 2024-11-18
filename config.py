@@ -1,4 +1,3 @@
-# 数据库配置
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
@@ -7,5 +6,4 @@ DB_CONFIG = {
     'charset': 'utf8mb4'
 }
 
-# 股票配置
 STOCK_SYMBOL = 'AAPL'
