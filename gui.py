@@ -18,6 +18,7 @@ class GUI:
             self.db.save_stock_data(data)
             dpg.set_value("status", "Data updated successfully!")
             dpg.configure_item("status", color = [0, 255, 0])
+            
         except Exception as e:
             dpg.set_value("status", f"Error: {str(e)}")
             dpg.configure_item("status", color = [255, 0, 0])
@@ -30,12 +31,9 @@ class GUI:
                 dpg.configure_item("status", color = [255, 0, 0])
                 return
             
-            print("Drawing chart...")
             self.chart.draw_kline(data)
-            print("Chart drawn, checking file...")
             
             if os.path.exists("stock_chart.png"):
-                print("Loading image...")
                 if self.texture_id != 0:
                     dpg.delete_item(self.texture_id)
                 
@@ -46,7 +44,6 @@ class GUI:
                 dpg.configure_item("chart_image", texture_tag = self.texture_id)
                 dpg.set_value("status", "Chart updated successfully!")
                 dpg.configure_item("status", color = [0, 255, 0])
-                print("Image loaded and displayed")
             else:
                 dpg.set_value("status", "Error: Chart file not found!")
                 dpg.configure_item("status", color = [255, 0, 0])
@@ -94,4 +91,4 @@ class GUI:
     def resize_callback(self, sender, app_data):
         new_width = app_data[0]
         new_height = app_data[1]
-        dpg.configure_item("chart_image", width = new_width-100, height = new_height-200)
+        dpg.configure_item("chart_image", width = new_width-100, height = new_height - 200)
