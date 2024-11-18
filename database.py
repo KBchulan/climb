@@ -71,7 +71,6 @@ class Database:
         self.conn.commit()
     
     def get_all_data(self):
-        """获取所有股票数据"""
         self.cursor.execute('''
             SELECT date, open, high, low, close, volume,
                    ma5, ma10, ma20, macd, macd_signal, macd_hist,

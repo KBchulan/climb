@@ -2,26 +2,18 @@ import time
 import requests
 import pandas as pd
 from datetime import datetime
-from urllib3.util import Retry
-from requests.adapters import HTTPAdapter
 
 class StockCrawler:
     def __init__(self, symbol):
         self.symbol = symbol
         
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'application/json',
+            'Accept-Language': 'zh-CN,zh;q=0.9'
         }
         
         self.session = requests.Session()
-        retry_strategy = Retry(
-            total=3,
-            backoff_factor=1,
-            status_forcelist=[500, 502, 503, 504]
-        )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
-        self.session.mount("http://", adapter)
-        self.session.mount("https://", adapter)
     
     def fetch_data(self):
         try:
@@ -33,23 +25,19 @@ class StockCrawler:
             params = {
                 'period1': start_date,
                 'period2': end_date,
-                'interval': '1d',  # 日线数据
-                'events': 'history',
-                'includeAdjustedClose': 'true'
+                'interval': '1d',
             }
             
-            # 发送请求，添加超时设置
             response = self.session.get(
                 url, 
-                headers=self.headers, 
-                params=params,
-                timeout=(5, 15)  # (连接超时, 读取超时)
+                headers = self.headers, 
+                params = params,
+                timeout = (5, 15)
             )
             
             if response.status_code != 200:
                 raise Exception(f"API request failed with status code: {response.status_code}")
             
-            # 解析数据
             data = response.json()
             
             if 'chart' not in data or 'result' not in data['chart'] or not data['chart']['result']:
@@ -59,7 +47,6 @@ class StockCrawler:
             timestamps = result['timestamp']
             quote = result['indicators']['quote'][0]
             
-            # 创建DataFrame
             df = pd.DataFrame({
                 'Date': [datetime.fromtimestamp(ts) for ts in timestamps],
                 'Open': quote['open'],
@@ -69,10 +56,7 @@ class StockCrawler:
                 'Volume': quote['volume']
             })
             
-            # 设置日期为索引
-            df.set_index('Date', inplace=True)
-            
-            # 处理可能的空值
+            df.set_index('Date', inplace = True)
             df = df.dropna()
             
             if df.empty:
@@ -90,6 +74,3 @@ class StockCrawler:
     def __del__(self):
         if hasattr(self, 'session'):
             self.session.close()
-    
-    def _format_date(self, date):
-        return date.strftime('%Y-%m-%d')

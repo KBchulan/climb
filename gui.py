@@ -69,18 +69,18 @@ class GUI:
         with dpg.window(label="Stock Analysis Panel", width=1180, height=780):
             with dpg.group(horizontal=True):
                 dpg.add_button(label="Update Data", callback=self.fetch_and_save, width=150, height=40)
-                dpg.add_spacing(count=5)
+                dpg.add_spacer(height=5)
                 dpg.add_button(label="Show Chart", callback=self.show_chart, width=150, height=40)
             
-            dpg.add_spacing(count=10)
+            dpg.add_spacer(height=10)
             dpg.add_separator()
-            dpg.add_spacing(count=10)
+            dpg.add_spacer(height=10)
             
             with dpg.group(horizontal=True):
                 dpg.add_text("Status: ", color=[255, 255, 255])
                 dpg.add_text("System Ready", tag="status", color=[0, 255, 0])
             
-            dpg.add_spacing(count=10)
+            dpg.add_spacer(height=10)
             
             with dpg.group():
                 dpg.add_text("K-Line Chart:")
