@@ -92,3 +92,4 @@ class GUI:
         new_width = app_data[0]
         new_height = app_data[1]
         dpg.configure_item("chart_image", width = new_width-100, height = new_height - 200)
+        
